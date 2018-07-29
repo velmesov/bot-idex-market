@@ -13,9 +13,12 @@ body {
 	height: 100%;
 }
 
-h1, h2, h3, h4, h5, h6 {
-	margin: 0;
-	padding: 0
+.color-red {
+	color: rgb(200,0,0);
+}
+
+.color-green {
+	color: rgb(0,150,0);
 }
 
 .header {
@@ -24,7 +27,8 @@ h1, h2, h3, h4, h5, h6 {
 	justify-content: flex-start;
 	align-items: center;
 	height: 50px;
-	background-color: rgb(220,220,220);
+	background-color: rgb(220,220,230);
+	box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
 
 .header > .logo {
@@ -33,6 +37,38 @@ h1, h2, h3, h4, h5, h6 {
 
 .header > .logo > img {
 	height: 30px;
+}
+
+.content {
+	padding: 20px;
+}
+
+.section {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: stretch;
+}
+
+.subsection.margin-left {
+	margin-left: 20px;
+}
+
+.title {
+	font-size: 2em;
+	font-weight: bold;
+}
+
+.TickerAll {
+	width: 600px;
+}
+
+.TickerAll > .list {
+}
+
+.TickerAll > .list > .dataTables_wrapper > .dataTables_scroll > .dataTables_scrollBody > table > tbody > tr:hover {
+	cursor: pointer;
+	background-color: rgb(220,220,230);
 }
 
 button {
@@ -55,4 +91,14 @@ button {
 	border: 1px solid rgb(200,200,200);
 	border-radius: 6px;
 	overflow-y: auto;
+}
+
+.footer {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	height: 50px;
+	background-color: rgb(220,220,230);
+	box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
