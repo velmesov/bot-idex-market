@@ -40,7 +40,7 @@ body {
 }
 
 .content {
-	padding: 20px;
+	padding: 0 20px 20px 20px;
 }
 
 .section {
@@ -48,6 +48,7 @@ body {
 	flex-direction: row;
 	justify-content: flex-start;
 	align-items: stretch;
+	margin-top: 20px;
 }
 
 .subsection.margin-left {
@@ -59,14 +60,11 @@ body {
 	font-weight: bold;
 }
 
-.TickerAll {
+.ticker {
 	width: 600px;
 }
 
-.TickerAll > .list {
-}
-
-.TickerAll > .list > .dataTables_wrapper > .dataTables_scroll > .dataTables_scrollBody > table > tbody > tr:hover {
+.ticker > .dataTables_wrapper > .dataTables_scroll > .dataTables_scrollBody > table > tbody > tr:hover {
 	cursor: pointer;
 	background-color: rgb(220,220,230);
 }
@@ -81,16 +79,6 @@ button {
 	background-color: rgb(100,100,150);
 	border-radius: 4px;
 	cursor: pointer;
-}
-
-.result {
-	width: 800px;
-	height: 500px;
-	margin: 20px 0 0 0;
-	padding: 10px;
-	border: 1px solid rgb(200,200,200);
-	border-radius: 6px;
-	overflow-y: auto;
 }
 
 .footer {
