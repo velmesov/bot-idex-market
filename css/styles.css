@@ -3,15 +3,14 @@
 }
 
 html {
+	color: rgb(70,70,70);
 	font-size: 16px;
 	font-family: sans-serif;
 }
 
 body {
 	margin: 0;
-	padding: 20px;
 	height: 100%;
-	background-color: rgb(30,40,50);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -19,6 +18,41 @@ h1, h2, h3, h4, h5, h6 {
 	padding: 0
 }
 
-h1 {
-	color: rgb(150,160,170);
+.header {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	height: 50px;
+	background-color: rgb(220,220,220);
+}
+
+.header > .logo {
+	margin: 0 0 0 20px;
+}
+
+.header > .logo > img {
+	height: 30px;
+}
+
+button {
+	height: 30px;
+	margin-top: 20px;
+	padding: 0 10px;
+	border: none;
+	outline: none;
+	color: rgb(255,255,255);
+	background-color: rgb(100,100,150);
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.result {
+	width: 800px;
+	height: 500px;
+	margin: 20px 0 0 0;
+	padding: 10px;
+	border: 1px solid rgb(200,200,200);
+	border-radius: 6px;
+	overflow-y: auto;
 }
