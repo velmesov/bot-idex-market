@@ -1,8 +1,6 @@
 'use strict'
 
-let private_key = '0xfb9ff9d3ddd0e371bd1d32704cc21d834f3a932749324e3eb0a2d9558702071a';
 let address = '0x8899af1aa48cdfdedbf394221ab5fb9b69f4ae7b';
-
 let timerId = false;
 
 // Основные настройки ajax запросов
@@ -17,6 +15,12 @@ $(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
 });
 
 getMarkets();
+
+$('.search-markets').keyup(function() {
+	let query = $(this).val().toUpperCase();
+	$('.markets tbody').find('tr').hide();
+	$('.markets tbody > tr:contains(' + query + ')').show();
+});
 
 function getMarkets() {
 	$.ajax({
@@ -238,7 +242,7 @@ function getOpenOrders(coin) {
 			let orderPrice;
 			let orderAmount;
 			let orderTotal;
-			
+
 			$.each(v1, function(i2, v2) {
 				if (i2 == 'price') {
 					orderPrice = substrValueOrders(v2);
@@ -277,7 +281,7 @@ function getOpenOrders(coin) {
 			let orderPrice;
 			let orderAmount;
 			let orderTotal;
-			
+
 			$.each(v1, function(i2, v2) {
 				if (i2 == 'price') {
 					orderPrice = substrValueOrders(v2);
@@ -306,6 +310,12 @@ function getOpenOrders(coin) {
 		$('.open-orders').addClass('show');
 	});
 }
+
+$('.search-trade-history').keyup(function() {
+	let query = $(this).val().toLowerCase();
+	$('.trade-history tbody').find('tr').hide();
+	$('.trade-history tbody > tr:contains(' + query + ')').show();
+});
 
 function getTradeHistory(coin) {
 	let date_start = String(Date.now() - (1000 * 60 * 60 * 24 * 7)).substr(0, 10);

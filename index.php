@@ -23,6 +23,7 @@ require 'conf/main.php';
 		<div class="section">
 			<div class="subsection">
 				<div class="title">Markets (Список монет)</div>
+				<input type="text" placeholder="Поиск..." class="search-markets">
 				<div class="markets" data-selected-coin=""></div>
 			</div>
 			<div class="subsection margin-left">
@@ -52,8 +53,8 @@ require 'conf/main.php';
 			</div>
 		</div>
 		<div class="title">История торговли</div>
-		<div class="section trade-history">
-		</div>
+		<input type="text" placeholder="Поиск..." class="search-trade-history">
+		<div class="section trade-history"></div>
 	</div>
 	<div class="footer"></div>
 	<script src="js/jquery.js"></script>
