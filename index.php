@@ -23,26 +23,37 @@ require 'conf/main.php';
 	<div class="content">
 		<div class="section">
 			<div class="subsection">
-				<div class="title">Список монет</div>
-				<div class="ticker" data-selected-coin=""></div>
+				<div class="title">Markets (Список монет)</div>
+				<div class="markets" data-selected-coin=""></div>
 			</div>
 			<div class="subsection margin-left">
-				<div>
-					<div class="title">Настройки</div>
-					<button class="btn-order-book">Список всех ордеров</button>
-				    <button class="btn-open-orders" data-address="0x8899af1aa48cdfdedbf394221ab5fb9b69f4ae7b">Список открытых ордеров</button>
-				</div>
+				<div class="title">Настройки</div>
 			</div>
 		</div>
-		<div class="section">
+		<div class="title">Все ордера</div>
+		<div class="section order-book">
 			<div class="subsection">
-				<div class="title">Продажа</div>
-				<div class="orders-asks"></div>
+				<div class="title">ASKS (Продажа)</div>
+				<div class="asks"></div>
 			</div>
 			<div class="subsection margin-left">
-				<div class="title">Покупка</div>
-				<div class="orders-bids"></div>
+				<div class="title">BIDS (Покупка)</div>
+				<div class="bids"></div>
 			</div>
+		</div>
+		<div class="title">Мои открытые ордера</div>
+		<div class="section open-orders">
+			<div class="subsection">
+				<div class="title">ASKS (Продажа)</div>
+				<div class="asks"></div>
+			</div>
+			<div class="subsection margin-left">
+				<div class="title">BIDS (Покупка)</div>
+				<div class="bids"></div>
+			</div>
+		</div>
+		<div class="title">История торговли</div>
+		<div class="section trade-history">
 		</div>
 	</div>
 	<div class="footer"></div>

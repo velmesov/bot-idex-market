@@ -18,7 +18,7 @@ body {
 }
 
 .color-green {
-	color: rgb(0,150,0);
+	color: rgb(0,120,0);
 }
 
 .header {
@@ -40,7 +40,15 @@ body {
 }
 
 .content {
-	padding: 0 20px 20px 20px;
+	padding: 20px 20px 0 20px;
+}
+
+.content > .title {
+	margin-bottom: 20px;
+	text-align: center;
+	font-size: 2em;
+	font-weight: bold;
+	color: rgb(80,100,120);
 }
 
 .section {
@@ -48,25 +56,40 @@ body {
 	flex-direction: row;
 	justify-content: flex-start;
 	align-items: stretch;
-	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.section.show {
+	display: flex;
+}
+
+.subsection {
+	flex-basis: 50%;
 }
 
 .subsection.margin-left {
 	margin-left: 20px;
 }
 
-.title {
-	font-size: 2em;
+.subsection > .title {
+	text-align: left;
+	font-size: 1.4em;
 	font-weight: bold;
 }
 
-.ticker {
-	width: 600px;
+.markets {
+	width: 450px;
 }
 
-.ticker > .dataTables_wrapper > .dataTables_scroll > .dataTables_scrollBody > table > tbody > tr:hover {
+.markets > .dataTables_wrapper > .dataTables_scroll > .dataTables_scrollBody > table > tbody > tr:hover {
 	cursor: pointer;
 	background-color: rgb(220,220,230);
+}
+
+.order-book,
+.open-orders,
+.trade-history {
+	display: none;
 }
 
 button {

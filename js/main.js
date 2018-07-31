@@ -1,6 +1,7 @@
 'use strict'
 
 let private_key = '0xfb9ff9d3ddd0e371bd1d32704cc21d834f3a932749324e3eb0a2d9558702071a';
+let address = '0x8899af1aa48cdfdedbf394221ab5fb9b69f4ae7b';
 
 // Основные настройки ajax запросов
 $.ajaxSetup({
@@ -13,9 +14,9 @@ $(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
 	alert('Error!\n' + 'URL: ' + ajaxSettings.url);
 });
 
-getTicker();
+getMarkets();
 
-function getTicker() {
+function getMarkets() {
 	$.ajax({
 		url: 'https://api.idex.market/returnTicker'
 	})
@@ -26,41 +27,44 @@ function getTicker() {
 		'    <tr>' +
 		'        <th>Монета</th>' +
 		'        <th>Цена</th>' +
-		'        <th>High</th>' +
-		'        <th>Low</th>' +
-		'        <th>Lowest Ask</th>' +
-		'        <th>Highest Bid</th>' +
 		'        <th>Процент изменения</th>' +
 		'        <th>Объём</th>' +
-		'        <th>Quote Volume</th>' +
 		'    </tr>' +
 		'</thead>' +
 		'<tbody>';
 
 		$.each(data, function(i1, v1) {
-			html += '<tr data-coin="' + i1 + '">'
-			html += '    <td>' + substrCoin(i1) + '</td>';
+			let marketCoin = substrCoin(i1);
+			let marketPrice;
+			let marketPercent;
+			let marketVolume;
 
 			$.each(v1, function(i2, v2) {
-				if (i2 == 'percentChange') {
-					html += '<td>' + substrPercent(v2) + '</td>';
+				if (i2 == 'last') {
+					marketPrice = substrValueOrders(v2);
+				}
+				else if (i2 == 'percentChange') {
+					marketPercent = substrPercent(v2);
 				}
 				else if (i2 == 'baseVolume') {
-					html += '<td>' + substrBaseVolume(v2) + '</td>';
-				}
-				else {
-					html += '<td>' + v2 + '</td>';
+					marketVolume = substrBaseVolume(v2);
 				}
 			});
 
-			html += '</tr>';
+			html +=
+			'<tr data-coin="' + i1 + '">' +
+			'    <td>' + marketCoin + '</td>' +
+			'    <td>' + marketPrice + '</td>' +
+			'    <td>' + marketPercent + '</td>' +
+			'    <td>' + marketVolume + '</td>' +
+			'</tr>';
 		});
 
 		html += '</tbody>';
 		html += '</table>';
 
-		$('.ticker').html(html);
-		$('.ticker > table').DataTable({
+		$('.markets').html(html);
+		$('.markets > table').DataTable({
 			'order': [[0, 'asc']],
 			'searching': true,
 			'ordering': true,
@@ -69,74 +73,37 @@ function getTicker() {
 			'scrollCollapse': true,
 			'info': false,
 			'paging': false,
-			/* 'fixedColumns': {
-				'leftColumns': 1
-			}, */
 			'language': {
 				'url': 'conf/DataTables_RU.json'
 			},
 			'columnDefs': [
 				{
 					'targets': [0],
-					'visible': true,
 					'searchable': true
 				},
 				{
 					'targets': [1],
-					'visible': true,
 					'searchable': false
 				},
 				{
 					'targets': [2],
-					'visible': false,
 					'searchable': false
 				},
 				{
 					'targets': [3],
-					'visible': false,
 					'searchable': false
-				},
-				{
-					'targets': [4],
-					'visible': false,
-					'searchable': false
-				},
-				{
-					'targets': [5],
-					'visible': false,
-					'searchable': false
-				},
-				{
-					'targets': [6],
-					'visible': true,
-					'searchable': false
-				},
-				{
-					'targets': [7],
-					'visible': true,
-					'searchable': false
-				},
-				{
-					'targets': [8],
-					'visible': false,
-					'searchable': false
-				},
+				}
 			]
 		});
 	});
 };
 
-$('.ticker').on('click', '.dataTables_wrapper > .dataTables_scroll > .dataTables_scrollBody > table > tbody > tr', function() {
-	$('.ticker').attr('data-selected-coin', $(this).attr('data-coin'));
-});
+$('.markets').on('click', '.dataTables_wrapper > .dataTables_scroll > .dataTables_scrollBody > table > tbody > tr', function() {
+	$('.markets').attr('data-selected-coin', $(this).attr('data-coin'));
 
-$('.btn-order-book').click(function() {
-	if (getSelectedCoin()) {
-		getOrderBook(getSelectedCoin());
-	}
-	else {
-		alert('Сначала выберите валютную пару');
-	}
+	getOrderBook(getSelectedCoin());
+	getOpenOrders(getSelectedCoin());
+	getTradeHistory(getSelectedCoin());
 });
 
 function getOrderBook(coin) {
@@ -150,12 +117,13 @@ function getOrderBook(coin) {
 	})
 	.done(function(data, textStatus, jqXHR) {
 		let ordersAsks =
-		'<table class="display compact cell-border" style="width: 100%">' +
+		'<table class="display compact cell-border nowrap" style="width: 100%">' +
 		'<thead>' +
 		'    <tr>' +
 		'        <th>Цена</th>' +
-		'        <th>' + substrCoin(coin) + '</th>' +
+		'        <th>Объём (' + substrCoin(coin) + ')</th>' +
 		'        <th>ETH</th>' +
+		'        <th>Пользователь</th>' +
 		'    </tr>' +
 		'</thead>' +
 		'<tbody>';
@@ -164,20 +132,26 @@ function getOrderBook(coin) {
 			ordersAsks += '<tr>';
 
 			$.each(v1, function(i2, v2) {
-				if (i2 == 'params') {
-					/* ordersAsks += '&nbsp;&nbsp;&nbsp;<b>params:</b><br>';
-					$.each(v2, function(i3, v3) {
-						ordersAsks += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + i3 + ': ' + v3 + '<br>';
-					}); */
-				}
-				else if (i2 == 'price') {
-					ordersAsks += '<td>' + v2 + '</td>';
+				if (i2 == 'price') {
+					ordersAsks += '<td>' + substrValueOrders(v2) + '</td>';
 				}
 				else if (i2 == 'amount') {
-					ordersAsks += '<td>' + v2 + '</td>';
+					ordersAsks += '<td>' + substrValueOrders(v2) + '</td>';
 				}
 				else if (i2 == 'total') {
-					ordersAsks += '<td>' + v2 + '</td>';
+					ordersAsks += '<td>' + substrValueOrders(v2) + '</td>';
+				}
+				else if (i2 == 'params') {
+					$.each(v2, function(i3, v3) {
+						if (i3 == 'user') {
+							if (address == v3) {
+								ordersAsks += '<td><span class="color-green">' + v3 + '</span></td>';
+							}
+							else {
+								ordersAsks += '<td>' + v3 + '</td>';
+							}
+						}
+					});
 				}
 			});
 
@@ -187,8 +161,8 @@ function getOrderBook(coin) {
 		ordersAsks += '</tbody>';
 		ordersAsks += '</table>';
 
-		$('.orders-asks').html(ordersAsks);
-		$('.orders-asks > table').DataTable({
+		$('.order-book .asks').html(ordersAsks);
+		$('.order-book .asks > table').DataTable({
 			'order': [[0, 'asc']],
 			'searching': false,
 			'ordering': false,
@@ -203,12 +177,13 @@ function getOrderBook(coin) {
 		});
 
 		let ordersBids =
-		'<table class="display compact cell-border" style="width: 100%">' +
+		'<table class="display compact cell-border nowrap" style="width: 100%">' +
 		'<thead>' +
 		'    <tr>' +
 		'        <th>Цена</th>' +
-		'        <th>' + substrCoin(coin) + '</th>' +
+		'        <th>Объём (' + substrCoin(coin) + ')</th>' +
 		'        <th>ETH</th>' +
+		'        <th>Пользователь</th>' +
 		'    </tr>' +
 		'</thead>' +
 		'<tbody>';
@@ -217,20 +192,26 @@ function getOrderBook(coin) {
 			ordersBids += '<tr>';
 
 			$.each(v1, function(i2, v2) {
-				if (i2 == 'params') {
-					/* ordersBids += '&nbsp;&nbsp;&nbsp;<b>params:</b><br>';
-					$.each(v2, function(i3, v3) {
-						ordersBids += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + i3 + ': ' + v3 + '<br>';
-					}); */
-				}
-				else if (i2 == 'price') {
-					ordersBids += '<td>' + v2 + '</td>';
+				if (i2 == 'price') {
+					ordersBids += '<td>' + substrValueOrders(v2) + '</td>';
 				}
 				else if (i2 == 'amount') {
-					ordersBids += '<td>' + v2 + '</td>';
+					ordersBids += '<td>' + substrValueOrders(v2) + '</td>';
 				}
 				else if (i2 == 'total') {
-					ordersBids += '<td>' + v2 + '</td>';
+					ordersBids += '<td>' + substrValueOrders(v2) + '</td>';
+				}
+				else if (i2 == 'params') {
+					$.each(v2, function(i3, v3) {
+						if (i3 == 'user') {
+							if (address == v3) {
+								ordersBids += '<td><span class="color-green">' + v3 + '</span></td>';
+							}
+							else {
+								ordersBids += '<td>' + v3 + '</td>';
+							}
+						}
+					});
 				}
 			});
 
@@ -240,8 +221,8 @@ function getOrderBook(coin) {
 		ordersBids += '</tbody>';
 		ordersBids += '</table>';
 
-		$('.orders-bids').html(ordersBids);
-		$('.orders-bids > table').DataTable({
+		$('.order-book .bids').html(ordersBids);
+		$('.order-book .bids > table').DataTable({
 			'order': [[0, 'asc']],
 			'searching': false,
 			'ordering': false,
@@ -254,19 +235,12 @@ function getOrderBook(coin) {
 				'url': 'conf/DataTables_RU.json'
 			}
 		});
+
+		$('.order-book').addClass('show');
 	});
 }
 
-$('.btn-open-orders').click(function() {
-	if (getSelectedCoin()) {
-		getOpenOrders(getSelectedCoin(), $(this).attr('data-address'));
-	}
-	else {
-		alert('Сначала выберите валютную пару');
-	}
-});
-
-function getOpenOrders(coin, address) {
+function getOpenOrders(coin) {
 	let request = {
 		market: coin,
 		address: address
@@ -278,11 +252,11 @@ function getOpenOrders(coin, address) {
 	})
 	.done(function(data, textStatus, jqXHR) {
 		let ordersAsks =
-		'<table class="display compact cell-border" style="width: 100%">' +
+		'<table class="display compact cell-border nowrap" style="width: 100%">' +
 		'<thead>' +
 		'    <tr>' +
 		'        <th>Цена</th>' +
-		'        <th>' + substrCoin(coin) + '</th>' +
+		'        <th>Объём (' + substrCoin(coin) + ')</th>' +
 		'        <th>ETH</th>' +
 		'    </tr>' +
 		'</thead>' +
@@ -292,13 +266,7 @@ function getOpenOrders(coin, address) {
 			ordersAsks += '<tr>';
 
 			$.each(v1, function(i2, v2) {
-				if (i2 == 'params') {
-					/* ordersAsks += '&nbsp;&nbsp;&nbsp;<b>params:</b><br>';
-					$.each(v2, function(i3, v3) {
-						ordersAsks += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + i3 + ': ' + v3 + '<br>';
-					}); */
-				}
-				else if (i2 == 'price') {
+				if (i2 == 'price') {
 					ordersAsks += '<td>' + v2 + '</td>';
 				}
 				else if (i2 == 'amount') {
@@ -306,6 +274,12 @@ function getOpenOrders(coin, address) {
 				}
 				else if (i2 == 'total') {
 					ordersAsks += '<td>' + v2 + '</td>';
+				}
+				else if (i2 == 'params') {
+					/* ordersAsks += '&nbsp;&nbsp;&nbsp;<b>params:</b><br>';
+					$.each(v2, function(i3, v3) {
+						ordersAsks += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + i3 + ': ' + v3 + '<br>';
+					}); */
 				}
 			});
 
@@ -315,8 +289,8 @@ function getOpenOrders(coin, address) {
 		ordersAsks += '</tbody>';
 		ordersAsks += '</table>';
 
-		$('.orders-asks').html(ordersAsks);
-		$('.orders-asks > table').DataTable({
+		$('.open-orders .asks').html(ordersAsks);
+		$('.open-orders .asks > table').DataTable({
 			'order': [[0, 'asc']],
 			'searching': false,
 			'ordering': false,
@@ -331,11 +305,11 @@ function getOpenOrders(coin, address) {
 		});
 
 		let ordersBids =
-		'<table class="display compact cell-border" style="width: 100%">' +
+		'<table class="display compact cell-border nowrap" style="width: 100%">' +
 		'<thead>' +
 		'    <tr>' +
 		'        <th>Цена</th>' +
-		'        <th>' + substrCoin(coin) + '</th>' +
+		'        <th>Объём (' + substrCoin(coin) + ')</th>' +
 		'        <th>ETH</th>' +
 		'    </tr>' +
 		'</thead>' +
@@ -345,13 +319,7 @@ function getOpenOrders(coin, address) {
 			ordersBids += '<tr>';
 
 			$.each(v1, function(i2, v2) {
-				if (i2 == 'params') {
-					/* ordersBids += '&nbsp;&nbsp;&nbsp;<b>params:</b><br>';
-					$.each(v2, function(i3, v3) {
-						ordersBids += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + i3 + ': ' + v3 + '<br>';
-					}); */
-				}
-				else if (i2 == 'price') {
+				if (i2 == 'price') {
 					ordersBids += '<td>' + v2 + '</td>';
 				}
 				else if (i2 == 'amount') {
@@ -359,6 +327,12 @@ function getOpenOrders(coin, address) {
 				}
 				else if (i2 == 'total') {
 					ordersBids += '<td>' + v2 + '</td>';
+				}
+				else if (i2 == 'params') {
+					/* ordersBids += '&nbsp;&nbsp;&nbsp;<b>params:</b><br>';
+					$.each(v2, function(i3, v3) {
+						ordersBids += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + i3 + ': ' + v3 + '<br>';
+					}); */
 				}
 			});
 
@@ -368,8 +342,8 @@ function getOpenOrders(coin, address) {
 		ordersBids += '</tbody>';
 		ordersBids += '</table>';
 
-		$('.orders-bids').html(ordersBids);
-		$('.orders-bids > table').DataTable({
+		$('.open-orders .bids').html(ordersBids);
+		$('.open-orders .bids > table').DataTable({
 			'order': [[0, 'asc']],
 			'searching': false,
 			'ordering': false,
@@ -382,6 +356,106 @@ function getOpenOrders(coin, address) {
 				'url': 'conf/DataTables_RU.json'
 			}
 		});
+
+		$('.open-orders').addClass('show');
+	});
+}
+
+function getTradeHistory(coin) {
+	let date_start = String(Date.now() - (1000 * 60 * 60 * 24 * 7)).substr(0, 10);
+
+	let request = {
+		market: coin,
+		start: date_start
+	};
+
+	$.ajax({
+		url: 'https://api.idex.market/returnTradeHistory',
+		data: JSON.stringify(request)
+	})
+	.done(function(data, textStatus, jqXHR) {
+		let trades =
+		'<table class="display compact cell-border nowrap" style="width: 100%">' +
+		'<thead>' +
+		'    <tr>' +
+		'        <th>Дата</th>' +
+		'        <th>Тип</th>' +
+		'        <th>Цена</th>' +
+		'        <th>Объём</th>' +
+		'        <th>Продавец</th>' +
+		'        <th>Покупатель</th>' +
+		'    </tr>' +
+		'</thead>' +
+		'<tbody>';
+
+		$.each(data, function(i1, v1) {
+			let tradeDate;
+			let tradeType;
+			let tradePrice;
+			let tradeAmount;
+			let tradeMaker;
+			let tradeTaker;
+
+			$.each(v1, function(i2, v2) {
+				if (i2 == 'date') {
+					tradeDate = v2;
+				}
+				else if (i2 == 'type') {
+					tradeType = formatTypeTrade(v2);
+				}
+				else if (i2 == 'price') {
+					tradePrice = substrValueOrders(v2);
+				}
+				else if (i2 == 'amount') {
+					tradeAmount = substrValueOrders(v2);
+				}
+				else if (i2 == 'maker') {
+					tradeMaker = v2;
+				}
+				else if (i2 == 'taker') {
+					tradeTaker = v2;
+				}
+			});
+
+			let highlightRow;
+
+			if (address == tradeMaker || address == tradeTaker) {
+				highlightRow = ' style="background-color: rgb(210,230,210);"';
+			}
+			else {
+				highlightRow = '';
+			}
+
+			trades +=
+			'<tr' + highlightRow + '>' +
+			'    <td>' + tradeDate + '</td>' +
+			'    <td>' + tradeType + '</td>' +
+			'    <td>' + tradePrice + '</td>' +
+			'    <td>' + tradeAmount + '</td>' +
+			'    <td>' + tradeMaker + '</td>' +
+			'    <td>' + tradeTaker + '</td>' +
+			'</tr>';
+		});
+
+		trades += '</tbody>';
+		trades += '</table>';
+
+		$('.trade-history').html(trades);
+		$('.trade-history > table').DataTable({
+			'order': [[0, 'desc']],
+			'searching': true,
+			'ordering': true,
+			'scrollX': true,
+			'scrollY': '400px',
+			'scrollCollapse': true,
+			'info': false,
+			'paging': false,
+			'language': {
+				'url': 'conf/DataTables_RU.json'
+			}
+		});
+
+		$('.trade-history').addClass('show');
 	});
 }
 
@@ -437,8 +511,37 @@ function substrBaseVolume(volume) {
 	return result;
 }
 
+function substrValueOrders(val) {
+	let result      = '';
+	let indexDot    = val.indexOf('.');
+
+	// Если не найдена точка
+	if (indexDot == -1) {
+		result = val.substr(0, 8);
+	}
+	// Если найдена точка
+	else if (indexDot !== -1) {
+		result = val.substr(0, indexDot + 9);
+	}
+
+	return result;
+}
+
+function formatTypeTrade(type) {
+	let result = '';
+
+	if (type == 'sell') {
+		result = '<span class="color-red">Sell</span>';
+	}
+	else if (type == 'buy') {
+		result = '<span class="color-green">Buy</span>';
+	}
+
+	return result;
+}
+
 function getSelectedCoin() {
-	let coin = $('.ticker').attr('data-selected-coin');
+	let coin = $('.markets').attr('data-selected-coin');
 
 	if (coin == '') {
 		coin = false;
