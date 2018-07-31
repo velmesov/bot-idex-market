@@ -12,7 +12,6 @@ require 'conf/main.php';
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title>Idex.Market - Бот</title>
 	<link rel="stylesheet" href="css/styles.css<?= $conf['cache'] ?>">
-	<link rel="stylesheet" href="css/datatables.css">
 </head>
 <body>
 	<div class="header">
@@ -58,7 +57,6 @@ require 'conf/main.php';
 	</div>
 	<div class="footer"></div>
 	<script src="js/jquery.js"></script>
-	<script src="js/datatables.js"></script>
 	<script src="js/main.js<?= $conf['cache'] ?>"></script>
 </body>
 </html>

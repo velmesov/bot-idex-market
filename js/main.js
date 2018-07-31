@@ -3,6 +3,8 @@
 let private_key = '0xfb9ff9d3ddd0e371bd1d32704cc21d834f3a932749324e3eb0a2d9558702071a';
 let address = '0x8899af1aa48cdfdedbf394221ab5fb9b69f4ae7b';
 
+let timerId = false;
+
 // Основные настройки ajax запросов
 $.ajaxSetup({
 	method: 'post',
@@ -21,8 +23,8 @@ function getMarkets() {
 		url: 'https://api.idex.market/returnTicker'
 	})
 	.done(function(data, textStatus, jqXHR) {
-		let html =
-		'<table class="display compact cell-border" style="width: 100%">' +
+		let markets =
+		'<table>' +
 		'<thead>' +
 		'    <tr>' +
 		'        <th>Монета</th>' +
@@ -51,7 +53,7 @@ function getMarkets() {
 				}
 			});
 
-			html +=
+			markets +=
 			'<tr data-coin="' + i1 + '">' +
 			'    <td>' + marketCoin + '</td>' +
 			'    <td>' + marketPrice + '</td>' +
@@ -60,43 +62,31 @@ function getMarkets() {
 			'</tr>';
 		});
 
-		html += '</tbody>';
-		html += '</table>';
+		markets += '</tbody>';
+		markets += '</table>';
 
-		$('.markets').html(html);
-		$('.markets > table').DataTable({
-			'order': [[0, 'asc']],
-			'searching': true,
-			'ordering': true,
-			'scrollX': true,
-			'scrollY': '300px',
-			'scrollCollapse': true,
-			'info': false,
-			'paging': false,
-			'language': {
-				'url': 'conf/DataTables_RU.json'
-			},
-			'columnDefs': [
-				{
-					'targets': [0],
-					'searchable': true
-				},
-				{
-					'targets': '_all',
-					'searchable': false
-				}
-			]
-		});
+		$('.markets').html(markets);
+		$('.markets').addClass('show');
 	});
 };
 
-$('.markets').on('click', '.dataTables_wrapper > .dataTables_scroll > .dataTables_scrollBody > table > tbody > tr', function() {
+$('.markets').on('click', 'table > tbody > tr', function() {
 	$('.markets').attr('data-selected-coin', $(this).attr('data-coin'));
 
 	getOrderBook(getSelectedCoin());
 	getOpenOrders(getSelectedCoin());
 	getTradeHistory(getSelectedCoin());
+
+	if (!timerId) {
+		timerId = setInterval(startTimer, 10000);
+	}
 });
+
+function startTimer() {
+	getOrderBook(getSelectedCoin());
+	getOpenOrders(getSelectedCoin());
+	getTradeHistory(getSelectedCoin());
+}
 
 function getOrderBook(coin) {
 	let request = {
@@ -109,7 +99,7 @@ function getOrderBook(coin) {
 	})
 	.done(function(data, textStatus, jqXHR) {
 		let ordersAsks =
-		'<table class="display compact cell-border nowrap" style="width: 100%">' +
+		'<table>' +
 		'<thead>' +
 		'    <tr>' +
 		'        <th>Цена</th>' +
@@ -162,23 +152,8 @@ function getOrderBook(coin) {
 		ordersAsks += '</tbody>';
 		ordersAsks += '</table>';
 
-		$('.order-book .asks').html(ordersAsks);
-		$('.order-book .asks > table').DataTable({
-			'order': [[0, 'asc']],
-			'searching': false,
-			'ordering': false,
-			'scrollX': true,
-			'scrollY': '300px',
-			'scrollCollapse': true,
-			'info': false,
-			'paging': false,
-			'language': {
-				'url': 'conf/DataTables_RU.json'
-			}
-		});
-
 		let ordersBids =
-		'<table class="display compact cell-border nowrap" style="width: 100%">' +
+		'<table>' +
 		'<thead>' +
 		'    <tr>' +
 		'        <th>Цена</th>' +
@@ -231,21 +206,8 @@ function getOrderBook(coin) {
 		ordersBids += '</tbody>';
 		ordersBids += '</table>';
 
+		$('.order-book .asks').html(ordersAsks);
 		$('.order-book .bids').html(ordersBids);
-		$('.order-book .bids > table').DataTable({
-			'order': [[0, 'asc']],
-			'searching': false,
-			'ordering': false,
-			'scrollX': true,
-			'scrollY': '300px',
-			'scrollCollapse': true,
-			'info': false,
-			'paging': false,
-			'language': {
-				'url': 'conf/DataTables_RU.json'
-			}
-		});
-
 		$('.order-book').addClass('show');
 	});
 }
@@ -262,7 +224,7 @@ function getOpenOrders(coin) {
 	})
 	.done(function(data, textStatus, jqXHR) {
 		let ordersAsks =
-		'<table class="display compact cell-border nowrap" style="width: 100%">' +
+		'<table>' +
 		'<thead>' +
 		'    <tr>' +
 		'        <th>Цена</th>' +
@@ -300,23 +262,8 @@ function getOpenOrders(coin) {
 		ordersAsks += '</tbody>';
 		ordersAsks += '</table>';
 
-		$('.open-orders .asks').html(ordersAsks);
-		$('.open-orders .asks > table').DataTable({
-			'order': [[0, 'asc']],
-			'searching': false,
-			'ordering': false,
-			'scrollX': true,
-			'scrollY': '300px',
-			'scrollCollapse': true,
-			'info': false,
-			'paging': false,
-			'language': {
-				'url': 'conf/DataTables_RU.json'
-			}
-		});
-
 		let ordersBids =
-		'<table class="display compact cell-border nowrap" style="width: 100%">' +
+		'<table>' +
 		'<thead>' +
 		'    <tr>' +
 		'        <th>Цена</th>' +
@@ -354,21 +301,8 @@ function getOpenOrders(coin) {
 		ordersBids += '</tbody>';
 		ordersBids += '</table>';
 
+		$('.open-orders .asks').html(ordersAsks);
 		$('.open-orders .bids').html(ordersBids);
-		$('.open-orders .bids > table').DataTable({
-			'order': [[0, 'asc']],
-			'searching': false,
-			'ordering': false,
-			'scrollX': true,
-			'scrollY': '300px',
-			'scrollCollapse': true,
-			'info': false,
-			'paging': false,
-			'language': {
-				'url': 'conf/DataTables_RU.json'
-			}
-		});
-
 		$('.open-orders').addClass('show');
 	});
 }
@@ -387,7 +321,7 @@ function getTradeHistory(coin) {
 	})
 	.done(function(data, textStatus, jqXHR) {
 		let trades =
-		'<table class="display compact cell-border nowrap" style="width: 100%">' +
+		'<table>' +
 		'<thead>' +
 		'    <tr>' +
 		'        <th>Дата</th>' +
@@ -450,20 +384,6 @@ function getTradeHistory(coin) {
 		trades += '</table>';
 
 		$('.trade-history').html(trades);
-		$('.trade-history > table').DataTable({
-			'order': [[0, 'desc']],
-			'searching': true,
-			'ordering': true,
-			'scrollX': true,
-			'scrollY': '400px',
-			'scrollCollapse': true,
-			'info': false,
-			'paging': false,
-			'language': {
-				'url': 'conf/DataTables_RU.json'
-			}
-		});
-
 		$('.trade-history').addClass('show');
 	});
 }
