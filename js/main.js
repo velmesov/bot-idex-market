@@ -82,15 +82,7 @@ function getMarkets() {
 					'searchable': true
 				},
 				{
-					'targets': [1],
-					'searchable': false
-				},
-				{
-					'targets': [2],
-					'searchable': false
-				},
-				{
-					'targets': [3],
+					'targets': '_all',
 					'searchable': false
 				}
 			]
@@ -129,33 +121,42 @@ function getOrderBook(coin) {
 		'<tbody>';
 
 		$.each(data.asks, function(i1, v1) {
-			ordersAsks += '<tr>';
+			let orderPrice;
+			let orderAmount;
+			let orderTotal;
+			let orderUser;
+
+			let highlighting = '';
 
 			$.each(v1, function(i2, v2) {
 				if (i2 == 'price') {
-					ordersAsks += '<td>' + substrValueOrders(v2) + '</td>';
+					orderPrice = substrValueOrders(v2);
 				}
 				else if (i2 == 'amount') {
-					ordersAsks += '<td>' + substrValueOrders(v2) + '</td>';
+					orderAmount = substrValueOrders(v2);
 				}
 				else if (i2 == 'total') {
-					ordersAsks += '<td>' + substrValueOrders(v2) + '</td>';
+					orderTotal = substrValueOrders(v2);
 				}
 				else if (i2 == 'params') {
 					$.each(v2, function(i3, v3) {
 						if (i3 == 'user') {
 							if (address == v3) {
-								ordersAsks += '<td><span class="color-green">' + v3 + '</span></td>';
+								highlighting = ' class="highlighting-line"';
 							}
-							else {
-								ordersAsks += '<td>' + v3 + '</td>';
-							}
+							orderUser = v3;
 						}
 					});
 				}
 			});
 
-			ordersAsks += '</tr>';
+			ordersAsks +=
+			'<tr' + highlighting + '>' +
+			'    <td>' + orderPrice + '</td>' +
+			'    <td>' + orderAmount + '</td>' +
+			'    <td>' + orderTotal + '</td>' +
+			'    <td>' + orderUser + '</td>' +
+			'</tr>';
 		});
 
 		ordersAsks += '</tbody>';
@@ -189,33 +190,42 @@ function getOrderBook(coin) {
 		'<tbody>';
 
 		$.each(data.bids, function(i1, v1) {
-			ordersBids += '<tr>';
+			let orderPrice;
+			let orderAmount;
+			let orderTotal;
+			let orderUser;
+
+			let highlighting = '';
 
 			$.each(v1, function(i2, v2) {
 				if (i2 == 'price') {
-					ordersBids += '<td>' + substrValueOrders(v2) + '</td>';
+					orderPrice = substrValueOrders(v2);
 				}
 				else if (i2 == 'amount') {
-					ordersBids += '<td>' + substrValueOrders(v2) + '</td>';
+					orderAmount = substrValueOrders(v2);
 				}
 				else if (i2 == 'total') {
-					ordersBids += '<td>' + substrValueOrders(v2) + '</td>';
+					orderTotal = substrValueOrders(v2);
 				}
 				else if (i2 == 'params') {
 					$.each(v2, function(i3, v3) {
 						if (i3 == 'user') {
 							if (address == v3) {
-								ordersBids += '<td><span class="color-green">' + v3 + '</span></td>';
+								highlighting = ' class="highlighting-line"';
 							}
-							else {
-								ordersBids += '<td>' + v3 + '</td>';
-							}
+							orderUser = v3;
 						}
 					});
 				}
 			});
 
-			ordersBids += '</tr>';
+			ordersBids +=
+			'<tr' + highlighting + '>' +
+			'    <td>' + orderPrice + '</td>' +
+			'    <td>' + orderAmount + '</td>' +
+			'    <td>' + orderTotal + '</td>' +
+			'    <td>' + orderUser + '</td>' +
+			'</tr>';
 		});
 
 		ordersBids += '</tbody>';
@@ -263,27 +273,28 @@ function getOpenOrders(coin) {
 		'<tbody>';
 
 		$.each(data.asks, function(i1, v1) {
-			ordersAsks += '<tr>';
-
+			let orderPrice;
+			let orderAmount;
+			let orderTotal;
+			
 			$.each(v1, function(i2, v2) {
 				if (i2 == 'price') {
-					ordersAsks += '<td>' + v2 + '</td>';
+					orderPrice = substrValueOrders(v2);
 				}
 				else if (i2 == 'amount') {
-					ordersAsks += '<td>' + v2 + '</td>';
+					orderAmount = substrValueOrders(v2);
 				}
 				else if (i2 == 'total') {
-					ordersAsks += '<td>' + v2 + '</td>';
-				}
-				else if (i2 == 'params') {
-					/* ordersAsks += '&nbsp;&nbsp;&nbsp;<b>params:</b><br>';
-					$.each(v2, function(i3, v3) {
-						ordersAsks += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + i3 + ': ' + v3 + '<br>';
-					}); */
+					orderTotal = substrValueOrders(v2);
 				}
 			});
 
-			ordersAsks += '</tr>';
+			ordersAsks +=
+			'<tr>' +
+			'    <td>' + orderPrice + '</td>' +
+			'    <td>' + orderAmount + '</td>' +
+			'    <td>' + orderTotal + '</td>' +
+			'</tr>';
 		});
 
 		ordersAsks += '</tbody>';
@@ -316,27 +327,28 @@ function getOpenOrders(coin) {
 		'<tbody>';
 
 		$.each(data.bids, function(i1, v1) {
-			ordersBids += '<tr>';
-
+			let orderPrice;
+			let orderAmount;
+			let orderTotal;
+			
 			$.each(v1, function(i2, v2) {
 				if (i2 == 'price') {
-					ordersBids += '<td>' + v2 + '</td>';
+					orderPrice = substrValueOrders(v2);
 				}
 				else if (i2 == 'amount') {
-					ordersBids += '<td>' + v2 + '</td>';
+					orderAmount = substrValueOrders(v2);
 				}
 				else if (i2 == 'total') {
-					ordersBids += '<td>' + v2 + '</td>';
-				}
-				else if (i2 == 'params') {
-					/* ordersBids += '&nbsp;&nbsp;&nbsp;<b>params:</b><br>';
-					$.each(v2, function(i3, v3) {
-						ordersBids += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + i3 + ': ' + v3 + '<br>';
-					}); */
+					orderTotal = substrValueOrders(v2);
 				}
 			});
 
-			ordersBids += '</tr>';
+			ordersBids +=
+			'<tr>' +
+			'    <td>' + orderPrice + '</td>' +
+			'    <td>' + orderAmount + '</td>' +
+			'    <td>' + orderTotal + '</td>' +
+			'</tr>';
 		});
 
 		ordersBids += '</tbody>';
@@ -417,17 +429,14 @@ function getTradeHistory(coin) {
 				}
 			});
 
-			let highlightRow;
+			let highlighting = '';
 
 			if (address == tradeMaker || address == tradeTaker) {
-				highlightRow = ' style="background-color: rgb(210,230,210);"';
-			}
-			else {
-				highlightRow = '';
+				highlighting = ' class="highlighting-line"';
 			}
 
 			trades +=
-			'<tr' + highlightRow + '>' +
+			'<tr' + highlighting + '>' +
 			'    <td>' + tradeDate + '</td>' +
 			'    <td>' + tradeType + '</td>' +
 			'    <td>' + tradePrice + '</td>' +
