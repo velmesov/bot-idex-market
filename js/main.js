@@ -77,11 +77,11 @@ function getMarkets() {
 $('.markets').on('click', 'table > tbody > tr', function() {
 	$('.markets').attr('data-selected-coin', $(this).attr('data-coin'));
 
-	getOrderBook(getSelectedCoin());
-	getOpenOrders(getSelectedCoin());
-	getTradeHistory(getSelectedCoin());
-
 	if (!timerId) {
+		getOrderBook(getSelectedCoin());
+		getOpenOrders(getSelectedCoin());
+		getTradeHistory(getSelectedCoin());
+
 		timerId = setInterval(startTimer, 10000);
 	}
 });
