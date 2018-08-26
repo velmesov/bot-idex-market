@@ -1,7 +1,8 @@
 'use strict'
 
-let address = '0x8899af1aa48cdfdedbf394221ab5fb9b69f4ae7b';
-let timerId = false;
+let address     = '0x8899af1aa48cdfdedbf394221ab5fb9b69f4ae7b';
+let timerId     = false;
+let timerPeriod = 10000;
 
 // Основные настройки ajax запросов
 $.ajaxSetup({
@@ -21,6 +22,41 @@ $('.search-markets').keyup(function() {
 	$('.markets tbody').find('tr').hide();
 	$('.markets tbody > tr:contains(' + query + ')').show();
 });
+
+function getBalanceETH() {
+	let request = {
+		address: address
+	};
+
+	$.ajax({
+		url: 'https://api.idex.market/returnBalances',
+		data: JSON.stringify(request)
+	})
+	.done(function(data, textStatus, jqXHR) {
+		$.each(data, function(i, v) {
+			if (i == 'ETH') {
+				$('.balance-eth').find('.balance__value').text(v);
+			}
+			else {
+				$('.balance-coin').find('.balance__title').text('Баланс ' + i);
+				$('.balance-coin').find('.balance__value').text(v);
+			}
+		});
+	});
+}
+
+function setCoinName(coin) {
+	$('.coin-name').find('.coin__value').text(substrCoin(coin));
+}
+
+function getCurrencies() {
+	$.ajax({
+		url: 'https://api.idex.market/returnCurrencies'
+	})
+	.done(function(data, textStatus, jqXHR) {
+		console.log(data);
+	});
+}
 
 function getMarkets() {
 	$.ajax({
@@ -78,15 +114,20 @@ $('.markets').on('click', 'table > tbody > tr', function() {
 	$('.markets').attr('data-selected-coin', $(this).attr('data-coin'));
 
 	if (!timerId) {
+		//getCurrencies();
+		setCoinName(getSelectedCoin());
+		getBalanceETH();
 		getOrderBook(getSelectedCoin());
 		getOpenOrders(getSelectedCoin());
 		getTradeHistory(getSelectedCoin());
 
-		timerId = setInterval(startTimer, 10000);
+		timerId = setInterval(startTimer, timerPeriod);
 	}
 });
 
 function startTimer() {
+	setCoinName(getSelectedCoin());
+	getBalanceETH();
 	getOrderBook(getSelectedCoin());
 	getOpenOrders(getSelectedCoin());
 	getTradeHistory(getSelectedCoin());

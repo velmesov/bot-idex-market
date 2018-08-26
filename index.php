@@ -27,7 +27,29 @@ require 'conf/main.php';
 				<div class="markets" data-selected-coin=""></div>
 			</div>
 			<div class="subsection margin-left">
-				<div class="title">Настройки</div>
+				<div class="title">Покупка</div>
+				<div class="balance-eth">
+					<span class="balance__title">Баланс ETH:</span>
+					<span class="balance__value">0</span>
+				</div>
+				<div class="balance-coin">
+					<span class="balance__title"></span>
+					<span class="balance__value"></span>
+				</div>
+				<div class="coin-name">
+					<span class="coin__title">Монета:</span>
+					<span class="coin__value"></span>
+				</div>
+				<div class="volume-order">
+					<span class="volume__title">Объём сделки:</span>
+					<input type="text" placeholder="Объём..." class="volume__value">
+					<button class="volume__set-max">макс</button>
+				</div>
+				<div class="price-threshold">
+					<span class="threshold__title">Порог цены:</span>
+					<input type="text" class="threshold__value" placeholder="Порог...">
+				</div>
+				<button class="order-start">СТАРТ</button>
 			</div>
 		</div>
 		<div class="title">Все ордера</div>

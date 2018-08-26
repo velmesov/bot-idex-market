@@ -143,8 +143,66 @@ table > tbody > tr:hover {
 	overflow-y: auto;
 }
 
+.markets > table > tbody > tr:hover {
+	cursor: pointer;
+}
+
 .markets.show {
 	display: block;
+}
+
+.balance-eth > .balance__title,
+.balance-coin > .balance__title,
+.coin-name > .coin__title,
+.volume-order > .volume__title,
+.price-threshold > .threshold__title {
+	font-weight: bold;
+}
+
+.volume-order > .volume__title,
+.price-threshold > .threshold__title {
+	margin-top: 10px;
+	width: 140px;
+	display: inline-block;
+}
+
+.volume-order > .volume__value,
+.price-threshold > .threshold__value {
+	height: 24px;
+	width: 200px;
+}
+
+.volume-order > .volume__set-max {
+	height: 24px;
+	padding: 0 8px;
+	color: rgb(255,255,255);
+	background-color: rgb(80,100,150);
+	border-radius: 4px;
+	border: none;
+	outline: none;
+}
+
+.volume-order > .volume__set-max:hover {
+	cursor: pointer;
+	background-color: rgb(50,80,120);
+}
+
+.order-start {
+	width: 100px;
+	height: 30px;
+	line-height: 30px;
+	margin-top: 20px;
+	font-size: 1.2em;
+	color: rgb(255,255,255);
+	background-color: rgb(80,100,150);
+	border-radius: 4px;
+	border: none;
+	outline: none;
+}
+
+.order-start:hover {
+	cursor: pointer;
+	background-color: rgb(50,80,120);
 }
 
 .order-book,
