@@ -12,7 +12,7 @@ $.ajaxSetup({
 
 // Обработчик ошибок ajax запросов
 $(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
-	alert('Error!\n' + 'URL: ' + ajaxSettings.url);
+	console.log('Error!\n' + 'URL: ' + ajaxSettings.url);
 });
 
 getMarkets();
