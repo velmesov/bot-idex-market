@@ -11,12 +11,12 @@ require 'conf/main.php';
 	<meta name="description" content="bot, бот">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title>Idex.Market - Бот</title>
-	<link rel="stylesheet" href="css/styles.css<?= $conf['cache'] ?>">
+	<link rel="stylesheet" href="public/css/home.css<?= $conf['cache'] ?>">
 </head>
 <body>
 	<div class="header">
 		<a href="/projects/idex-market/" class="logo">
-			<img src="images/logo-idex.svg" alt="Logo">
+			<img src="public/images/logo-idex.svg" alt="Logo">
 		</a>
 	</div>
 	<div class="content">
@@ -27,15 +27,8 @@ require 'conf/main.php';
 				<div class="markets" data-selected-coin=""></div>
 			</div>
 			<div class="subsection margin-left">
-				<div class="title">Покупка</div>
-				<div class="balance-eth">
-					<span class="balance__title">Баланс ETH:</span>
-					<span class="balance__value">0</span>
-				</div>
-				<div class="balance-coin">
-					<span class="balance__title"></span>
-					<span class="balance__value"></span>
-				</div>
+				<div class="title">Баланс</div>
+				<div class="balance"></div>
 				<div class="coin-name">
 					<span class="coin__title">Монета:</span>
 					<span class="coin__value"></span>
@@ -79,7 +72,6 @@ require 'conf/main.php';
 		<div class="section trade-history"></div>
 	</div>
 	<div class="footer"></div>
-	<script src="js/jquery.js"></script>
-	<script src="js/main.js<?= $conf['cache'] ?>"></script>
+	<script src="public/js/home.js<?= $conf['cache'] ?>"></script>
 </body>
 </html>
