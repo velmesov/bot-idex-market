@@ -1,6 +1,7 @@
 @import "../../components/main";
 
-input {
+input,
+select {
 	padding: 3px 5px;
 	border: 1px solid rgb(200,200,200);
 	outline: none;
@@ -70,6 +71,14 @@ input {
 
 .search-markets {
 	margin-bottom: 10px;
+}
+
+.user-list-address {
+	margin-left: 20px;
+}
+
+.user-address {
+	width: 400px;
 }
 
 .markets {

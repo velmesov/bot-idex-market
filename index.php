@@ -24,6 +24,13 @@ require 'conf/main.php';
 			<div class="subsection">
 				<div class="title">Markets (Список монет)</div>
 				<input type="text" placeholder="Поиск..." class="search-markets">
+				<select class="user-list-address">
+					<option value="not">- - - - - -</option>
+					<option value="0x8899af1aa48cdfdedbf394221ab5fb9b69f4ae7b">Андрей</option>
+					<option value="0x82ff9e428ad69f54f4c0251d13607af7da8bd91e">Даниил</option>
+					<option value="0x6b83615950444469c81e863c2a09d8405998d0a2">Кит</option>
+				</select>
+				<input type="text" placeholder="Введите адрес..." class="user-address">
 				<div class="markets" data-selected-coin=""></div>
 			</div>
 			<div class="subsection margin-left">
@@ -45,7 +52,7 @@ require 'conf/main.php';
 				<button class="order-start">СТАРТ</button>
 			</div>
 		</div>
-		<div class="title">Все ордера</div>
+		<div class="title">Все открытые ордера по монете</div>
 		<div class="section order-book">
 			<div class="subsection">
 				<div class="title">ASKS (Продажа)</div>
@@ -56,16 +63,9 @@ require 'conf/main.php';
 				<div class="bids"></div>
 			</div>
 		</div>
-		<div class="title">Мои открытые ордера</div>
+		<div class="title">Мои все открытые ордера по всем монетам</div>
 		<div class="section open-orders">
-			<div class="subsection">
-				<div class="title">ASKS (Продажа)</div>
-				<div class="asks"></div>
-			</div>
-			<div class="subsection margin-left">
-				<div class="title">BIDS (Покупка)</div>
-				<div class="bids"></div>
-			</div>
+			<div class="asks"></div>
 		</div>
 		<div class="title">История торговли</div>
 		<input type="text" placeholder="Поиск..." class="search-trade-history">
