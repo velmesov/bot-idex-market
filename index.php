@@ -29,6 +29,7 @@ require 'conf/main.php';
 					<option value="0x8899af1aa48cdfdedbf394221ab5fb9b69f4ae7b">Андрей</option>
 					<option value="0x82ff9e428ad69f54f4c0251d13607af7da8bd91e">Даниил</option>
 					<option value="0x6b83615950444469c81e863c2a09d8405998d0a2">Кит</option>
+					<option value="0x29e74ca3061e760601f1d8ba9e3f80b283e91fd2">Для тестирования</option>
 				</select>
 				<input type="text" placeholder="Введите адрес..." class="user-address">
 				<div class="markets" data-selected-coin=""></div>

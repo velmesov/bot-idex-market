@@ -1,9 +1,6 @@
 import './../../../scss/pages/home/index.scss'
 import $ from 'jquery'
 
-// TODO: Переписать на модули
-// let address = '0x8899af1aa48cdfdedbf394221ab5fb9b69f4ae7b'
-// let address = '0x29e74ca3061e760601f1d8ba9e3f80b283e91fd2'
 let timerId = false
 let timerPeriod = 10000
 
@@ -21,11 +18,16 @@ $(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
 getMarkets()
 
 $('.order-start').click(function () {
-    testOrder()
+    if (getSelectedCoin()) {
+        testOrder()
+    }
+    else {
+        alert('Выберите монету!')
+    }
 })
 
 function testOrder() {
-    let web3 = new Web3()
+    getContractAddress()
 }
 
 $('.search-markets').keyup(function () {
@@ -38,7 +40,6 @@ $('.markets').on('click', 'table > tbody > tr', function () {
     $('.markets').attr('data-selected-coin', $(this).attr('data-coin'))
 
     if (!timerId) {
-        //getCurrencies()
         setCoinName(getSelectedCoin())
         getBalance()
         getOrderBook(getSelectedCoin())
@@ -55,7 +56,7 @@ $('.search-trade-history').keyup(function () {
     $('.trade-history tbody > tr:contains(' + query + ')').show()
 })
 
-$('.content').on('change', '.user-list-address', function() {
+$('.content').on('change', '.user-list-address', function () {
     if ($(this).val() == 'not') {
         $('.user-address').val('')
     }
@@ -103,11 +104,11 @@ function cancelOrder() {
     }
 }
 
-function getNextNonce() {
+function getNextNonce(contractAddress) {
     $.ajax({
         url: 'https://api.idex.market/returnNextNonce'
     }).done(function (data, textStatus, jqXHR) {
-        console.log(data)
+        getCurrencies(contractAddress, data.nonce)
     })
 }
 
@@ -115,7 +116,7 @@ function getContractAddress() {
     $.ajax({
         url: 'https://api.idex.market/returnContractAddress'
     }).done(function (data, textStatus, jqXHR) {
-        console.log(data)
+        getNextNonce(data.address)
     })
 }
 
@@ -191,11 +192,51 @@ function setCoinName(coin) {
     $('.coin-name').find('.coin__value').text(substrCoin(coin))
 }
 
-function getCurrencies() {
+function getCurrencies(contractAddress, nonce) {
     $.ajax({
         url: 'https://api.idex.market/returnCurrencies'
     }).done(function (data, textStatus, jqXHR) {
-        console.log(data)
+        let address = data[substrCoin(getSelectedCoin())].address
+
+        const { soliditySha3 } = require('web3-utils')
+        const {
+            hashPersonalMessage,
+            bufferToHex,
+            toBuffer,
+            ecsign
+        } = require('ethereumjs-util')
+        const { mapValues } = require('lodash')
+        const raw = soliditySha3({
+            t: 'address',
+            v: contractAddress
+        }, {
+                t: 'address',
+                v: address
+            }, {
+                t: 'uint256',
+                v: 0.01
+            }, {
+                t: 'address',
+                v: data['ETH'].address
+            }, {
+                t: 'uint256',
+                v: 0.01
+            }, {
+                t: 'uint256',
+                v: 100000
+            }, {
+                t: 'uint256',
+                v: nonce
+            }, {
+                t: 'address',
+                v: address
+            })
+        const salted = hashPersonalMessage(toBuffer(raw))
+        const {
+            v,
+            r,
+            s
+        } = mapValues(ecsign(salted, privateKeyBuffer), (value, key) => key === 'v' ? value : bufferToHex(value))
     })
 }
 
